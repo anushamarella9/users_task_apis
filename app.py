@@ -127,7 +127,7 @@ def updateTask():
 
 @app.route('/delete_task/', methods=['DELETE'])
 @cross_origin(origin='localhost',headers=['Content-Type'])
-def deleteTask:
+def deleteTask():
     db = client['user_info']
     users = db.user_info
     user_id = request.json.get('id')
