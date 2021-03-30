@@ -47,7 +47,10 @@ def addTask():
 
     task = request.json.get('task')
 
-    users.update({'name':name},{'$push':{'task':task}})
+    #new_list = {'name':name,'task':task}
+    #db_query = users.insert_one(new_list)
+
+    users.update_one({'name':name},{'$push':{'task':task}})
     result = {'result' : 'task is added successfully','status_code':1}
 
     return result
@@ -61,10 +64,10 @@ def getUser():
     users = db.user_info
     result = []
     for user in users.find():
-        result.append({'name' : user['name'], 'id' : user['id'], 'task':user['task']})
+        result.append({'name' : user['name'],'id':user['id'],'task':user['task']})
+        
     return jsonify({'results' : result,'status_code':1})
-
-
+    
 @app.route("/update_user/", methods=["PUT"])
 @cross_origin(origin='localhost',headers=['Content-Type'])
 def updateUser():
@@ -98,11 +101,11 @@ def getTasks(username):
 
     db = client['user_info']
     users = db.user_info
-    username = 'username'
+    username = username
 
     result = []
-    for task in users.find():
-        result.append({'task' : task['name'], 'id' : task['id'],'username':username})
+    for task in users.find({'username':username}):
+        result.append({'task' : task['task'], 'name':task['name']})
     return jsonify({'results' : result,'status_code':1})
 
 
