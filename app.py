@@ -15,7 +15,6 @@ cors = CORS(app, resources={r"/add_user": {"origins": "http://localhost:5000"}})
 cors = CORS(app, resources={r"/add_task": {"origins": "http://localhost:5000"}})
 cors = CORS(app, resources={r"/update_user": {"origins": "http://localhost:5000"}})
 cors = CORS(app, resources={r"/delete_user": {"origins": "http://localhost:5000"}})
-
 cors = CORS(app, resources={r"/get_user": {"origins": "http://localhost:5000"}})
 cors = CORS(app, resources={r"/get_tasks_for_user/<username>": {"origins": "http://localhost:5000"}})
 cors = CORS(app, resources={r"/update_task": {"origins": "http://localhost:5000"}})
@@ -34,7 +33,7 @@ def addUser():
     new_list = {'name':name,'id':user_id}
     db_query = users.insert_one(new_list)
 
-    result = {'result' : 'user is added successfully'}
+    result = {'result' : 'user is added successfully','status_code':1}
 
     return result
 
@@ -48,9 +47,7 @@ def addTask():
 
     task = request.json.get('task')
 
-    new_list = {'username':name,'task':task}
-    db_query = users.insert_one(new_list)
-
+    users.update({'name':name},{'$push':{'task':task}})
     result = {'result' : 'task is added successfully','status_code':1}
 
     return result
@@ -64,7 +61,7 @@ def getUser():
     users = db.user_info
     result = []
     for user in users.find():
-        result.append({'name' : user['name'], 'id' : user['id']})
+        result.append({'name' : user['name'], 'id' : user['id'], 'task':user['task']})
     return jsonify({'results' : result,'status_code':1})
 
 
