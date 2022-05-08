@@ -1,7 +1,3 @@
 
-Techologies Used
+## Techologies Used
 Flask 
-
-Database
-MongoDB
-
